@@ -39,7 +39,6 @@ After running the above commands, you can run utils/get_avg_eval.py to get the a
 ### Prediction
 ```
 python vis/draw_pics_cmu.py --data_dir './data/cmu' --joint_num 25 --S_model_dims 1024 --save_dir_name 'cmu' --iter 200
-
 ```
 ### Fusion weight of model
 ```
