@@ -83,6 +83,8 @@ def val_func():
                                                                                       avg_mpjpe4 / 8., avg_mpjpe5 / 8.,
                                                                                       avg_mpjpe6 / 8.))
     losses_str[10] = losses_str[10].join("====================================================\n")
+    for i in range(11):
+        print('{}'.format(losses_str[i]))
 
     # csv save
     is_create = True

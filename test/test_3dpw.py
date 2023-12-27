@@ -61,6 +61,8 @@ def val_func():
                                                                                       avg_mpjpe2, avg_mpjpe3,
                                                                                       avg_mpjpe4, avg_mpjpe5))
     losses_str[2] = losses_str[2].join("====================================================\n")
+    for i in range(3):
+        print('{}'.format(losses_str[i]))
 
     # csv save
     ret_log = np.array(['avg'])
@@ -91,11 +93,21 @@ if __name__ == "__main__":
 
     model.to(device)
 
-    for iter in range(191, 200 + 1):
-        cp_path = config.model_path % (config.save_dir_name, iter)
+    if config.iter > 0:
+        cp_path = config.model_path % (config.save_dir_name, config.iter)
         print('loading model from checkpoint: %s' % cp_path)
         model_cp = pickle.load(open(cp_path, "rb"))
         model.load_state_dict(model_cp['model_dict'])
 
         with torch.no_grad():
             val_func()
+
+    else:
+        for iter in range(191, 200 + 1):
+            cp_path = config.model_path % (config.save_dir_name, iter)
+            print('loading model from checkpoint: %s' % cp_path)
+            model_cp = pickle.load(open(cp_path, "rb"))
+            model.load_state_dict(model_cp['model_dict'])
+
+            with torch.no_grad():
+                val_func()

@@ -33,18 +33,17 @@ For 3DPW:
 ```
 python test/test_3dpw.py --data_dir './data/3DPW/sequenceFiles' --joint_num 23 --S_model_dims 128 --save_dir_name '3dpw'
 ```
-After running the above commands, you can run utils/get_avg_eval.py to get the average eval results of last 10 epochs.
+After running the above commands, you can run utils/get_avg_eval.py to get the average eval results of the last 10 epochs.
 
 ## Visualization
-### Prediction
+### Predictions
 ```
 python vis/draw_pics_cmu.py --data_dir './data/cmu' --joint_num 25 --S_model_dims 1024 --save_dir_name 'cmu' --iter 200
 ```
-### Fusion weight of model
+### Fusion weights
 ```
-python vis/vis_fusion_weight.py --data_dir './data/3DPW/sequenceFiles' --joint_num 23 --S_model_dims 128 --save_dir_name '3dpw' --iter 200
+python vis/vis_fusion_weight.py --joint_num 23 --S_model_dims 128 --save_dir_name '3dpw' --iter 200
 ```
 
 ## Ablation
-Change t_pred_lst argument when running above commands.
-
+You can change `t_pred_lst` argument when running above commands.

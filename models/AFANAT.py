@@ -98,8 +98,9 @@ class AFANAT(nn.Module):
                 )
             )
 
-        self.Fusion_module = Fusion_module(joint_num=joint_num, t_pred=t_pred, t_pred_lst=t_pred_lst,
-                                           is_norm=is_norm, device=device)
+        if len(self.t_pred_lst) > 1:
+            self.Fusion_module = Fusion_module(joint_num=joint_num, t_pred=t_pred, t_pred_lst=t_pred_lst,
+                                               is_norm=is_norm, device=device)
 
     def forward(self, x):
         S_posit_encoding = self.posit_encoder(self.joint_num).type(torch.float64).to(self.device)
@@ -133,7 +134,8 @@ class AFANAT(nn.Module):
             out_res = torch.stack(out_res, dim=0)[:self.t_pred]
             out_res_lst.append(out_res)
 
-        out_res = self.Fusion_module(out_res_lst)
+        if len(self.t_pred_lst) > 1:
+            out_res = self.Fusion_module(out_res_lst)
 
         return out_res_lst, out_res
 
