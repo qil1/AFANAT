@@ -130,11 +130,21 @@ if __name__ == "__main__":
 
     model.to(device)
 
-    for iter in range(191, 200+1):
-        cp_path = config.model_path % (config.save_dir_name, iter)
+    if config.iter > 0:
+        cp_path = config.model_path % (config.save_dir_name, config.iter)
         print('loading model from checkpoint: %s' % cp_path)
         model_cp = pickle.load(open(cp_path, "rb"))
         model.load_state_dict(model_cp['model_dict'])
 
         with torch.no_grad():
             val_func()
+
+    else:
+        for iter in range(191, 200 + 1):
+            cp_path = config.model_path % (config.save_dir_name, iter)
+            print('loading model from checkpoint: %s' % cp_path)
+            model_cp = pickle.load(open(cp_path, "rb"))
+            model.load_state_dict(model_cp['model_dict'])
+
+            with torch.no_grad():
+                val_func()
