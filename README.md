@@ -33,7 +33,7 @@ For 3DPW:
 ```
 python test/test_3dpw.py --data_dir './data/3DPW/sequenceFiles' --joint_num 23 --S_model_dims 128 --save_dir_name '3dpw'
 ```
-After running the above commands, you can run utils/get_avg_eval.py to get the average eval results of the last 10 epochs.
+After running the above commands, you can run utils/get_avg_eval.py to get the averaged test results of the last 10 epochs.
 
 ## Visualization
 ### Predictions
