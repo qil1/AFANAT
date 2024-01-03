@@ -5,6 +5,9 @@ from utils import data_utils
 ACTION = ["basketball", "basketball_signal", "directing_traffic", "jumping", "running", "soccer", "walking",
           "washwindow"]
 
+'''
+adapted from https://github.com/705062791/PGBIG
+'''
 
 class CMU_Motion3D(Dataset):
 

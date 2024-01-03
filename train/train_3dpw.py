@@ -19,13 +19,16 @@ from utils.util import cal_total_model_param, cal_mpjpe_every_frame, seed_torch
 
 
 def loss_function(joint_pred_lst, joint_pred, joint_gt):
-    loss = torch.linalg.norm(
-        rearrange(joint_pred, 't b c d -> (b t c) d') -
-        rearrange(joint_gt, 'b t (c d) -> (b t c) d', d=3),
-        ord=2, axis=1).mean()
-    losses = [loss.item()]
+    loss = 0
+    losses = []
+    if len(joint_pred_lst) > 1:  # ensemble result loss
+        loss = torch.linalg.norm(
+            rearrange(joint_pred, 't b c d -> (b t c) d') -
+            rearrange(joint_gt, 'b t (c d) -> (b t c) d', d=3),
+            ord=2, axis=1).mean()
+        losses = [loss.item()]
 
-    for i, t_pred_ in enumerate(config.t_pred_lst):
+    for i, t_pred_ in enumerate(config.t_pred_lst):  # loss of each branch
         loss_ = torch.linalg.norm(
             rearrange(joint_pred_lst[i], 't b c d -> (b t c) d') -
             rearrange(joint_gt, 'b t (c d) -> (b t c) d', d=3),
@@ -42,8 +45,8 @@ def loss_function(joint_pred_lst, joint_pred, joint_gt):
 
         if t_pred_ * 2 < config.t_pred and config.f2_weight:
             loss += config.f2_weight * torch.linalg.norm(
-                rearrange(joint_pred_lst[i][:t_pred_*2], 't b c d -> (b t c) d') -
-                rearrange(joint_gt[:, :t_pred_*2], 'b t (c d) -> (b t c) d', d=3),
+                rearrange(joint_pred_lst[i][:t_pred_ * 2], 't b c d -> (b t c) d') -
+                rearrange(joint_gt[:, :t_pred_ * 2], 'b t (c d) -> (b t c) d', d=3),
                 ord=2, axis=1).mean()
 
     return loss, np.array([loss.item()] + losses)  #
@@ -52,8 +55,9 @@ def loss_function(joint_pred_lst, joint_pred, joint_gt):
 def train_func(epoch):
     model.train()
 
-    train_losses = np.array([0.0, 0.0] + [0.0 for _ in config.t_pred_lst])
-    loss_names = ['TOTAL', 'Ensemble'] + [f'Branch_{t_pred_}' for t_pred_ in config.t_pred_lst]
+    train_losses = np.array(([0.0, 0.0] if len(config.t_pred_lst) > 1 else [0.0]) + [0.0 for _ in config.t_pred_lst])
+    loss_names = (['TOTAL', 'Ensemble'] if len(config.t_pred_lst) > 1 else ['TOTAL']) + \
+                 [f'Branch_{t_pred_}' for t_pred_ in config.t_pred_lst]
     total_num_sample = 0
     dim_used = dataset.dim_used
 
@@ -181,6 +185,12 @@ if __name__ == '__main__':
     save_dir = os.sep.join(config.model_path.split('/')[:-1]) % config.save_dir_name
     if not os.path.exists(save_dir):
         os.mkdir(save_dir)
+
+    sorted(config.t_pred_lst)
+    if config.t_pred_lst[0] < 1 or config.t_pred_lst[-1] > config.t_pred:
+        raise RuntimeError("invalid t_pred_lst")
+    if config.t_pred_lst[-1] == config.t_pred:
+        config.t_pred_lst = [config.t_pred] + config.t_pred_lst[:-1]
 
     dtype = torch.float64
     torch.set_default_dtype(dtype)

@@ -8,6 +8,9 @@ from utils import data_utils
 from matplotlib import pyplot as plt
 import torch
 
+'''
+adapted from https://github.com/705062791/PGBIG
+'''
 
 class Datasets(Dataset):
 
