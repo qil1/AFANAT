@@ -1,7 +1,5 @@
 # AFANAT
 
-Code for paper "Human Motion Prediction via Adaptive Fusing Autoregressive and Non-Autoregressive Attention Networks".
-
 ## Datasets
 
 [CMU-Mocap](http://mocap.cs.cmu.edu/) is downloaded from repository [Convolutional-Sequence-to-Sequence-Model-for-Human-Dynamics](https://github.com/chaneyddtt/Convolutional-Sequence-to-Sequence-Model-for-Human-Dynamics) and [3DPW](https://virtualhumans.mpi-inf.mpg.de/3DPW/) from their official website. You should put all downloaded datasets into the `./data` directory.
