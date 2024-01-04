@@ -42,6 +42,3 @@ python vis/draw_pics_cmu.py --data_dir './data/cmu' --joint_num 25 --S_model_dim
 ```
 python vis/vis_fusion_weight.py --joint_num 23 --S_model_dims 128 --save_dir_name '3dpw' --iter 200
 ```
-
-## Ablation
-You can change `t_pred_lst` argument when running above commands.
