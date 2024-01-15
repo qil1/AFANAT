@@ -18,9 +18,6 @@ from utils.CMU_motion_3d import CMU_Motion3D, ACTION
 from utils.util import cal_total_model_param, cal_mpjpe_every_frame, seed_torch
 
 
-# python train/train_cmu.py --data_dir '/home/data/xuanqi/HMPdataset/cmu' --joint_num 25 --S_model_dims 1024
-# --save_dir_name 'cmu'
-
 def loss_function(joint_pred_lst, joint_pred, joint_gt):
     loss = 0
     losses = []

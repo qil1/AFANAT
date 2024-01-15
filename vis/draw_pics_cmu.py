@@ -173,7 +173,7 @@ if __name__ == "__main__":
         pred_mpjpe_all = np.zeros([config.t_pred])
         cnt = 0
         for (gt3d) in test_data_loader[act]:
-            if act == "basketball":
+            if act == config.action:
                 print("Action: ", act, cnt)
 
                 cnt += 1

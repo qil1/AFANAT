@@ -18,9 +18,6 @@ from utils.dpw3_3d import Datasets
 from utils.util import cal_total_model_param, cal_mpjpe_every_frame, seed_torch
 
 
-# python train/train_3dpw.py --data_dir '/home/data/xuanqi/HMPdataset/3DPW/sequenceFiles' --joint_num 23 --S_model_dims
-# 128 --save_dir_name '3dpw' --num_epoch 60 --t_pred 30 --t_pred_lst 30,5,10 --is_mlp_bn true --mlp_dropout 0.7
-
 def loss_function(joint_pred_lst, joint_pred, joint_gt):
     loss = 0
     losses = []
