@@ -1,7 +1,5 @@
 # AFANAT
 
-Code for paper "Human Motion Prediction via Adaptive Fusing Autoregressive and Non-Autoregressive Attention Networks".
-
 ## Datasets
 
 [CMU-Mocap](http://mocap.cs.cmu.edu/) is downloaded from repository [Convolutional-Sequence-to-Sequence-Model-for-Human-Dynamics](https://github.com/chaneyddtt/Convolutional-Sequence-to-Sequence-Model-for-Human-Dynamics) and [3DPW](https://virtualhumans.mpi-inf.mpg.de/3DPW/) from their official website. You should put all downloaded datasets into the `./data` directory.
@@ -44,6 +42,3 @@ python vis/draw_pics_cmu.py --data_dir './data/cmu' --joint_num 25 --S_model_dim
 ```
 python vis/vis_fusion_weight.py --joint_num 23 --S_model_dims 128 --save_dir_name '3dpw' --iter 200
 ```
-
-## Ablation
-You can change `t_pred_lst` argument when running above commands.
