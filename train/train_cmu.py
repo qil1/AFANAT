@@ -18,20 +18,24 @@ from utils.CMU_motion_3d import CMU_Motion3D, ACTION
 from utils.util import cal_total_model_param, cal_mpjpe_every_frame, seed_torch
 
 
+# python train/train_cmu.py --data_dir '/home/data/xuanqi/HMPdataset/cmu' --joint_num 25 --S_model_dims 1024
+# --save_dir_name 'cmu'
+
 def loss_function(joint_pred_lst, joint_pred, joint_gt):
     loss = 0
     losses = []
-    if len(joint_pred_lst) > 1:  # ensemble result loss
+    if len(joint_pred_lst) > 1:
         loss = torch.linalg.norm(
             rearrange(joint_pred, 't b c d -> (b t c) d') -
-            rearrange(joint_gt, 'b t (c d) -> (b t c) d', d=3),
+            rearrange(joint_gt[:, config.t_his:, ], 'b t (c d) -> (b t c) d', d=3),
             ord=2, axis=1).mean()
         losses = [loss.item()]
 
-    for i, t_pred_ in enumerate(config.t_pred_lst):  # loss of each branch
+    for i, t_pred_ in enumerate(config.t_pred_lst):
         loss_ = torch.linalg.norm(
             rearrange(joint_pred_lst[i], 't b c d -> (b t c) d') -
-            rearrange(joint_gt, 'b t (c d) -> (b t c) d', d=3),
+            rearrange(joint_gt[:, config.t_his:, ] if t_pred_ < config.t_pred else joint_gt, 'b t (c d) -> (b t c) d',
+                      d=3),
             ord=2, axis=1).mean()
         loss += loss_
         losses.append(loss_.item())
@@ -40,13 +44,13 @@ def loss_function(joint_pred_lst, joint_pred, joint_gt):
         if t_pred_ < config.t_pred and config.f1_weight:
             loss += config.f1_weight * torch.linalg.norm(
                 rearrange(joint_pred_lst[i][:t_pred_], 't b c d -> (b t c) d') -
-                rearrange(joint_gt[:, :t_pred_], 'b t (c d) -> (b t c) d', d=3),
+                rearrange(joint_gt[:, config.t_his:config.t_his + t_pred_], 'b t (c d) -> (b t c) d', d=3),
                 ord=2, axis=1).mean()
 
         if t_pred_ * 2 < config.t_pred and config.f2_weight:
             loss += config.f2_weight * torch.linalg.norm(
                 rearrange(joint_pred_lst[i][:t_pred_ * 2], 't b c d -> (b t c) d') -
-                rearrange(joint_gt[:, :t_pred_ * 2], 'b t (c d) -> (b t c) d', d=3),
+                rearrange(joint_gt[:, config.t_his:config.t_his + t_pred_ * 2], 'b t (c d) -> (b t c) d', d=3),
                 ord=2, axis=1).mean()
 
     return loss, np.array([loss.item()] + losses)  #
@@ -66,7 +70,8 @@ def train_func(epoch):
             gt3d = gt3d.type(dtype).to(device).contiguous()
             gt3d /= 1000.
             condition = rearrange(gt3d[:, :config.t_his, dim_used], 'b t (c d) -> b t c d', d=3).clone()
-            gt = gt3d[:, config.t_his:, dim_used].clone()
+            # gt = gt3d[:, config.t_his:, dim_used].clone()
+            gt = gt3d[:, :, dim_used].clone()
             out_res_lst, out_res = model(
                 x=condition,
             )
@@ -242,10 +247,13 @@ if __name__ == "__main__":
     data_loader = DataLoader(dataset, batch_size=config.batch_size, shuffle=True, num_workers=8, pin_memory=True)
 
     test_data_loader = {}
+    test_len = 0
     for act in ACTION:
         dataset = CMU_Motion3D(opt=config, split=1, actions=act)
+        test_len += dataset.__len__()
         test_data_loader[act] = DataLoader(dataset, batch_size=config.test_batch_size, shuffle=False, num_workers=0,
                                            pin_memory=True)
+    print('>>> Testing dataset length: {:d}'.format(test_len))
 
     '''model'''
     model = get_model(config, device)

@@ -18,20 +18,24 @@ from utils.dpw3_3d import Datasets
 from utils.util import cal_total_model_param, cal_mpjpe_every_frame, seed_torch
 
 
+# python train/train_3dpw.py --data_dir '/home/data/xuanqi/HMPdataset/3DPW/sequenceFiles' --joint_num 23 --S_model_dims
+# 128 --save_dir_name '3dpw' --num_epoch 60 --t_pred 30 --t_pred_lst 30,5,10 --is_mlp_bn true --mlp_dropout 0.7
+
 def loss_function(joint_pred_lst, joint_pred, joint_gt):
     loss = 0
     losses = []
-    if len(joint_pred_lst) > 1:  # ensemble result loss
+    if len(joint_pred_lst) > 1:
         loss = torch.linalg.norm(
             rearrange(joint_pred, 't b c d -> (b t c) d') -
-            rearrange(joint_gt, 'b t (c d) -> (b t c) d', d=3),
+            rearrange(joint_gt[:, config.t_his:, ], 'b t (c d) -> (b t c) d', d=3),
             ord=2, axis=1).mean()
         losses = [loss.item()]
 
-    for i, t_pred_ in enumerate(config.t_pred_lst):  # loss of each branch
+    for i, t_pred_ in enumerate(config.t_pred_lst):
         loss_ = torch.linalg.norm(
             rearrange(joint_pred_lst[i], 't b c d -> (b t c) d') -
-            rearrange(joint_gt, 'b t (c d) -> (b t c) d', d=3),
+            rearrange(joint_gt[:, config.t_his:, ] if t_pred_ < config.t_pred else joint_gt, 'b t (c d) -> (b t c) d',
+                      d=3),
             ord=2, axis=1).mean()
         loss += loss_
         losses.append(loss_.item())
@@ -40,13 +44,13 @@ def loss_function(joint_pred_lst, joint_pred, joint_gt):
         if t_pred_ < config.t_pred and config.f1_weight:
             loss += config.f1_weight * torch.linalg.norm(
                 rearrange(joint_pred_lst[i][:t_pred_], 't b c d -> (b t c) d') -
-                rearrange(joint_gt[:, :t_pred_], 'b t (c d) -> (b t c) d', d=3),
+                rearrange(joint_gt[:, config.t_his:config.t_his + t_pred_], 'b t (c d) -> (b t c) d', d=3),
                 ord=2, axis=1).mean()
 
         if t_pred_ * 2 < config.t_pred and config.f2_weight:
             loss += config.f2_weight * torch.linalg.norm(
                 rearrange(joint_pred_lst[i][:t_pred_ * 2], 't b c d -> (b t c) d') -
-                rearrange(joint_gt[:, :t_pred_ * 2], 'b t (c d) -> (b t c) d', d=3),
+                rearrange(joint_gt[:, config.t_his:config.t_his + t_pred_ * 2], 'b t (c d) -> (b t c) d', d=3),
                 ord=2, axis=1).mean()
 
     return loss, np.array([loss.item()] + losses)  #
@@ -68,8 +72,8 @@ def train_func(epoch):
             gt3d /= 1000.
             batch_size, seq_n, _ = gt3d.shape
             condition = rearrange(gt3d[:, :config.t_his, dim_used], 'b t (c d) -> b t c d', d=3).clone()
-            gt = gt3d[:, config.t_his:, dim_used].clone()
-
+            # gt = gt3d[:, config.t_his:, dim_used].clone()
+            gt = gt3d[:, :, dim_used].clone()
             out_res_lst, out_res = model(
                 x=condition,
             )
@@ -141,15 +145,15 @@ def val_func(epoch, test=False):
     print("avg forward pass time:", avg_time)
 
     avg_mpjpe1, avg_mpjpe2, avg_mpjpe3, avg_mpjpe4, avg_mpjpe5 = 0., 0., 0., 0., 0.
-    avg_mpjpe1 += mpjpe_ret_dict[4]  # frame 5  (200ms)
-    avg_mpjpe2 += mpjpe_ret_dict[9]  # frame 10  (400ms)
-    avg_mpjpe3 += mpjpe_ret_dict[14]  # frame 15  (600ms)
-    avg_mpjpe4 += mpjpe_ret_dict[19]  # frame 20  (800ms)
-    avg_mpjpe5 += mpjpe_ret_dict[24]  # frame 25  (1000ms)
+    avg_mpjpe1 += mpjpe_ret_dict[5]  # frame 6  (200ms)
+    avg_mpjpe2 += mpjpe_ret_dict[11]  # frame 12  (400ms)
+    avg_mpjpe3 += mpjpe_ret_dict[17]  # frame 18  (600ms)
+    avg_mpjpe4 += mpjpe_ret_dict[23]  # frame 24  (800ms)
+    avg_mpjpe5 += mpjpe_ret_dict[29]  # frame 30  (1000ms)
 
     losses_str = ['' for i in range(3)]
     losses_str[0] = losses_str[0].join(
-        "action | mpjpe 5frame | mpjpe 10frame | mpjpe 15frame | mpjpe 20frame | mpjpe 25frame")
+        "action | mpjpe 6frame | mpjpe 12frame | mpjpe 18frame | mpjpe 24frame | mpjpe 30frame")
 
     losses_str[1] = losses_str[1].join(
         "{} | {:<6.4f} | {:<6.4f} | {:<6.4f} | {:<6.4f} | {:<6.4f}".format("Average", avg_mpjpe1,
@@ -165,7 +169,7 @@ def val_func(epoch, test=False):
     head = np.array(['action'])
     for k in range(len(mpjpe_ret_dict)):
         ret_log = np.append(ret_log, [mpjpe_ret_dict[k]])
-        head = np.append(head, ['test_' + str((k + 1) * 40)])
+        head = np.append(head, ['test_' + str(int((k + 1) * 1000 / 30))])
     save_csv_eval_log(config, head, ret_log, is_create=True)
 
 

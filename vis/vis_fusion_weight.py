@@ -4,13 +4,13 @@ import pickle
 import pandas as pd
 import matplotlib.pyplot as plt
 import seaborn as sns
-
+import numpy as np
 sys.path.append(os.getcwd())
 from utils.opt import Options
 from models.AFANAT import *
 
 
-def vis_save_mat(mat, figsize=(15, 2), filename='fusion_weight'):
+def vis_save_mat(mat, figsize=(25, 2), filename='fusion_weight'):
     # mat = (mat / np.sum(mat, 0))
     df = pd.DataFrame(mat)
 
@@ -22,7 +22,8 @@ def vis_save_mat(mat, figsize=(15, 2), filename='fusion_weight'):
     col_label = ["T{}".format(i) for i in range(1, mat.shape[1] + 1)]
     ax.set_xticklabels(col_label, fontsize=12, family='Times New Roman')
 
-    row_label = ["NAR", "AR_5", "AR_10"]
+    # row_label = ["NAR", "AR_5", "AR_10"]
+    row_label = ["NAR", "AR"]
     ax.set_yticklabels(row_label, fontsize=12, family='Times New Roman', rotation=0)
 
     ax.tick_params(top=True, bottom=False,
@@ -52,5 +53,6 @@ if __name__ == "__main__":
     model.load_state_dict(model_cp['model_dict'])
 
     fusion_weight = model.state_dict()['Fusion_module.weight'].cpu().numpy().T
-    vis_save_mat(fusion_weight)
+    fusion_weight[1] = np.sum(fusion_weight[1:, ], axis=0)
+    vis_save_mat(fusion_weight[:2])
     print("save fusion weight  successfully.")

@@ -487,7 +487,6 @@ def load_data_cmu_3d_n(opt, path_to_dataset, actions, input_n, output_n, is_test
             num_frames = len(the_sequence)
 
             if (not is_test) or test_sample_num < 0:
-                # 如果不是测试的话就不用随机采样
                 fs = np.arange(0, num_frames - seq_len + 1)
                 fs_sel = fs
                 for i in np.arange(seq_len - 1):
@@ -501,7 +500,6 @@ def load_data_cmu_3d_n(opt, path_to_dataset, actions, input_n, output_n, is_test
                     sampled_seq = np.concatenate((sampled_seq, seq_sel), axis=0)
                     complete_seq = np.append(complete_seq, the_sequence, axis=0)
             else:
-                # 这里为什么source_seq_len 被固定为50帧？因为为了和之前一个方法保持一致，实际运行过程中会根据实际的输入长度进行调整。
                 source_seq_len = 50
                 target_seq_len = output_n
                 total_frames = source_seq_len + target_seq_len
@@ -544,11 +542,13 @@ def load_data_cmu_3d_all(opt, path_to_dataset, actions, input_n, output_n, is_te
             print('read ' + filename)
             action_sequence = readCSVasFloat(filename)
             n, d = action_sequence.shape
+            # print("n =", n, "d =", d)
             exptmps = torch.from_numpy(action_sequence).float().to(opt.gpu_index)
             xyz = expmap2xyz_torch_cmu(opt, exptmps)
             xyz = xyz.view(-1, 38 * 3)
             xyz = xyz.cpu().data.numpy()
-
+            # print("xyz.shape =", xyz.shape)
+            assert xyz.shape[0] == n
             save_filename = '{}/{}/{}_{}.npy'.format(path_to_dataset, action, action, examp_index + 1)
             np.save(save_filename, xyz)
             action_sequence = xyz

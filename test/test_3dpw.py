@@ -45,16 +45,16 @@ def val_func():
     mpjpe_ret_dict = pred_mpjpe_all / total_num_sample
 
     avg_mpjpe1, avg_mpjpe2, avg_mpjpe3, avg_mpjpe4, avg_mpjpe5 = 0., 0., 0., 0., 0.
-    avg_mpjpe1 += mpjpe_ret_dict[4]
-    avg_mpjpe2 += mpjpe_ret_dict[9]
-    avg_mpjpe3 += mpjpe_ret_dict[14]
-    avg_mpjpe4 += mpjpe_ret_dict[19]
-    avg_mpjpe5 += mpjpe_ret_dict[24]
+    avg_mpjpe1 += mpjpe_ret_dict[5]  # frame 6  (200ms)
+    avg_mpjpe2 += mpjpe_ret_dict[11]  # frame 12  (400ms)
+    avg_mpjpe3 += mpjpe_ret_dict[17]  # frame 18  (600ms)
+    avg_mpjpe4 += mpjpe_ret_dict[23]  # frame 24  (800ms)
+    avg_mpjpe5 += mpjpe_ret_dict[29]  # frame 30  (1000ms)
 
     losses_str = ['' for i in range(3)]
     # print("action | mpjpe 2frame | mpjpe 10frame | mpjpe 25frame")
     losses_str[0] = losses_str[0].join(
-        "action | mpjpe 5frame | mpjpe 10frame | mpjpe 15frame | mpjpe 20frame | mpjpe 25frame")
+        "action | mpjpe 6frame | mpjpe 12frame | mpjpe 18frame | mpjpe 24frame | mpjpe 30frame")
 
     losses_str[1] = losses_str[1].join(
         "{} | {:<6.4f} | {:<6.4f} | {:<6.4f} | {:<6.4f} | {:<6.4f}".format("Average", avg_mpjpe1,
@@ -69,7 +69,7 @@ def val_func():
     head = np.array(['action'])
     for k in range(len(mpjpe_ret_dict)):
         ret_log = np.append(ret_log, [mpjpe_ret_dict[k]])
-        head = np.append(head, ['test_' + str((k + 1) * 40)])
+        head = np.append(head, ['test_' + str(int((k + 1) * 1000 / 30))])
     save_csv_eval_log(config, head, ret_log, is_create=True, file_name='test_'+cp_path.split('/')[-1].split('.')[0])
 
 
@@ -103,7 +103,7 @@ if __name__ == "__main__":
             val_func()
 
     else:
-        for iter in range(191, 200 + 1):
+        for iter in range(config.num_epoch-9, config.num_epoch+1):
             cp_path = config.model_path % (config.save_dir_name, iter)
             print('loading model from checkpoint: %s' % cp_path)
             model_cp = pickle.load(open(cp_path, "rb"))

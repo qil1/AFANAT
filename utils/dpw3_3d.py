@@ -13,7 +13,7 @@ adapted from https://github.com/705062791/PGBIG
 '''
 
 class Datasets(Dataset):
-
+    # frame rate is 30hz (from "Learning Trajectory Dependencies for Human Motion Prediction")
     def __init__(self, opt, split=0, actions=None):
 
         path_to_data = opt.data_dir

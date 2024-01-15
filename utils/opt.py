@@ -32,6 +32,9 @@ class Options:
         self.parser.add_argument('--csv_dir', type=str, default='./log_tb/%s/csv')
         self.parser.add_argument('--model_path', type=str, default='./results/%s/model_%04d.p')
         self.parser.add_argument('--skip_rate', type=int, default=1, help='skip rate of samples')
+        self.parser.add_argument('--t_his', type=int, default=10, help='history')
+        self.parser.add_argument('--t_pred', type=int, default=25, help='prediction')
+        self.parser.add_argument('--joint_num', type=int, default=22, help='number of joints')
         # ===============================================================
         #                     Model options
         # ===============================================================
@@ -42,10 +45,9 @@ class Options:
         self.parser.add_argument('--S_dropout_rate', type=float, default=0.5)
         self.parser.add_argument('--T_enc_hiddims', type=int, default=512)
         self.parser.add_argument('--T_dec_hiddims', type=int, default=512)
-        self.parser.add_argument('--t_his', type=int, default=10, help='t_his')
-        self.parser.add_argument('--t_pred', type=int, default=25, help='t_pred')
+        self.parser.add_argument('--is_mlp_bn', type=boolean, default=False)
+        self.parser.add_argument('--mlp_dropout', type=float, default=0)
         self.parser.add_argument('--t_pred_lst', type=list_of_ints, default=[25, 5, 10])
-        self.parser.add_argument('--joint_num', type=int, default=22, help='number of joints')
         self.parser.add_argument('--is_norm', type=boolean, default=False)
         # ===============================================================
         #                     Running options
@@ -53,10 +55,8 @@ class Options:
         self.parser.add_argument('--f1_weight', type=float, default=8.0)
         self.parser.add_argument('--f2_weight', type=float, default=2.0)
         self.parser.add_argument('--lr', type=float, default=0.0001, help='lr')
-        self.parser.add_argument('--num_epoch', type=int, default=200, help='total training epoch')  #
-        # self.parser.add_argument('--warm', type=int, default=0, help='warm epoch num')
+        self.parser.add_argument('--num_epoch', type=int, default=200, help='total training epoch')
         self.parser.add_argument('--milestones', type=list_of_ints, default=[50, 100, 150, 180])  # [50, 100, 150, 180]
-        # self.parser.add_argument('--multiplier', type=float, default=2)
         self.parser.add_argument('--save_model_interval', type=int, default=1, help='the interval to save models')
         self.parser.add_argument('--batch_size', type=int, default=32)
         self.parser.add_argument('--test_batch_size', type=int, default=32)
