@@ -169,8 +169,6 @@ if __name__ == "__main__":
     index_to_equal = np.concatenate((joint_equal * 3, joint_equal * 3 + 1, joint_equal * 3 + 2))
 
     for act in ACTION:
-        total_num_sample = 0
-        pred_mpjpe_all = np.zeros([config.t_pred])
         cnt = 0
         for (gt3d) in test_data_loader[act]:
             if act == config.action:
@@ -191,8 +189,7 @@ if __name__ == "__main__":
                 pred32[:, config.t_his:config.t_his + config.t_pred, dim_used] = dec_res[:, :config.t_pred]
                 pred32[:, :, index_to_ignore] = pred32[:, :, index_to_equal]
                 pred32 = pred32.reshape([-1, config.t_his + config.t_pred, 38, 3])
-                gt3d_t = rearrange(gt3d[:, :], 'b t (c d) -> b t c d',
-                                   d=3).contiguous()
+                gt3d_t = rearrange(gt3d[:, :], 'b t (c d) -> b t c d', d=3).contiguous()
 
                 sample_gt = gt3d_t[0].detach().cpu()*1000
                 sample_pred = pred32[0].detach().cpu()*1000
