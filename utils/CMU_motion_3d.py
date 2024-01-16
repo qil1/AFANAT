@@ -11,7 +11,9 @@ adapted from https://github.com/705062791/PGBIG
 
 
 class CMU_Motion3D(Dataset):
-
+    # frame rate is not 25hz, but 30hz / 2 = 15hz
+    # (see "https://github.com/chaneyddtt/Convolutional-Sequence-to-Sequence-Model-for-Human-Dynamics/issues/4"),
+    # but to maintain consistency with the cited papers, we also employ "25Hz" in the table1 in our paper.
     def __init__(self, opt, split, actions='all'):
 
         self.path_to_data = opt.data_dir

@@ -540,17 +540,17 @@ def load_data_cmu_3d_all(opt, path_to_dataset, actions, input_n, output_n, is_te
         for examp_index in np.arange(count):
             filename = '{}/{}/{}_{}.txt'.format(path_to_dataset, action, action, examp_index + 1)
             print('read ' + filename)
-            action_sequence = readCSVasFloat(filename)
+            action_sequence = readCSVasFloat(filename)  # exponential mapping format
             n, d = action_sequence.shape
             # print("n =", n, "d =", d)
             exptmps = torch.from_numpy(action_sequence).float().to(opt.gpu_index)
-            xyz = expmap2xyz_torch_cmu(opt, exptmps)
+            xyz = expmap2xyz_torch_cmu(opt, exptmps)  # 3d coordinate format
             xyz = xyz.view(-1, 38 * 3)
             xyz = xyz.cpu().data.numpy()
             # print("xyz.shape =", xyz.shape)
             assert xyz.shape[0] == n
-            save_filename = '{}/{}/{}_{}.npy'.format(path_to_dataset, action, action, examp_index + 1)
-            np.save(save_filename, xyz)
+            # save_filename = '{}/{}/{}_{}.npy'.format(path_to_dataset, action, action, examp_index + 1)
+            # np.save(save_filename, xyz)
             action_sequence = xyz
 
             even_list = range(0, n, 2)

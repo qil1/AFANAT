@@ -12,15 +12,16 @@ import torch
 adapted from https://github.com/705062791/PGBIG
 '''
 
+
 class Datasets(Dataset):
-    # frame rate is 30hz (from "Learning Trajectory Dependencies for Human Motion Prediction")
+    # frame rate is 30hz (see "Learning Trajectory Dependencies for Human Motion Prediction")
     def __init__(self, opt, split=0, actions=None):
 
         path_to_data = opt.data_dir
         input_n = opt.t_his
         output_n = opt.t_pred
 
-        if split == 1:
+        if split == 1:  # validation
             their_input_n = 50
         else:
             their_input_n = input_n
@@ -58,12 +59,12 @@ class Datasets(Dataset):
                         all_seqs = seq_sel
                     else:
                         all_seqs = np.concatenate((all_seqs, seq_sel), axis=0)
-
+        print(all_seqs.shape)
         # self.all_seqs = all_seqs[:, (their_input_n - input_n):, :]
-        self.dim_used = np.array(range(3, np.array(all_seqs).shape[2]))
-        #all_seqs = all_seqs[:, (their_input_n - input_n):, 3:]
+        self.dim_used = np.array(range(3, np.array(all_seqs).shape[2]))  # discard the first joint
+        # all_seqs = all_seqs[:, (their_input_n - input_n):, 3:]
         all_seqs = all_seqs[:, (their_input_n - input_n):, :]
-        self.all_seqs = all_seqs * 1000
+        self.all_seqs = all_seqs * 1000  # multiply coordinates by 1000, enabling the range to be within [-1000, 1000].
 
     def __len__(self):
         return np.shape(self.all_seqs)[0]
