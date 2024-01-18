@@ -65,7 +65,6 @@ class Options:
                                                                                  '{8,256,-1(all dataset)}')
         self.parser.add_argument('--fps', type=int, default=3)
         self.parser.add_argument('--mode', default='test')
-        self.parser.add_argument('--action', default='running')
         self.parser.add_argument('--test_bid', type=int, default=0)
         self.parser.add_argument('--test_id', type=int, default=0)
         self.parser.add_argument('--test_act', default='walking')

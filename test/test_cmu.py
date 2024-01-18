@@ -140,7 +140,7 @@ if __name__ == "__main__":
             val_func()
 
     else:
-        for iter in range(191, 200 + 1):
+        for iter in range(config.num_epoch-9, config.num_epoch+1):
             cp_path = config.model_path % (config.save_dir_name, iter)
             print('loading model from checkpoint: %s' % cp_path)
             model_cp = pickle.load(open(cp_path, "rb"))

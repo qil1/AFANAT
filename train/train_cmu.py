@@ -155,7 +155,7 @@ def val_func(epoch, test=False):
     losses_str = ['' for i in range(11)]
     losses_str[0] = losses_str[0].join(
         "action | mpjpe 2frame | mpjpe 4frame | mpjpe 8frame | mpjpe 10frame | mpjpe 14frame | mpjpe 25frame")
-    for i in range(8):
+    for i in range(8):  # 8 actions
         avg_mpjpe1 += action_mpjpe[ACTION[i]][1]
         avg_mpjpe2 += action_mpjpe[ACTION[i]][3]
         avg_mpjpe3 += action_mpjpe[ACTION[i]][7]
@@ -244,13 +244,13 @@ if __name__ == "__main__":
     data_loader = DataLoader(dataset, batch_size=config.batch_size, shuffle=True, num_workers=8, pin_memory=True)
 
     test_data_loader = {}
-    test_len = 0
+    test_tot = 0
     for act in ACTION:
         dataset = CMU_Motion3D(opt=config, split=1, actions=act)
-        test_len += dataset.__len__()
+        test_tot += dataset.__len__()
         test_data_loader[act] = DataLoader(dataset, batch_size=config.test_batch_size, shuffle=False, num_workers=0,
                                            pin_memory=True)
-    print('>>> Testing dataset length: {:d}'.format(test_len))
+    print('>>> Testing dataset length: {:d}'.format(test_tot))
 
     '''model'''
     model = get_model(config, device)

@@ -171,7 +171,7 @@ if __name__ == "__main__":
     for act in ACTION:
         cnt = 0
         for (gt3d) in test_data_loader[act]:
-            if act == config.action:
+            if act == config.test_act:
                 print("Action: ", act, cnt)
 
                 cnt += 1

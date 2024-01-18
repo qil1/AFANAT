@@ -25,6 +25,7 @@ python test/test_3dpw.py --data_dir './data/3DPW/sequenceFiles' --save_dir_name 
 ```
 
 After running the above commands, you can run utils/get_avg_eval.py to get the averaged test results of the last 10 epochs(the results reported in our paper).
+Training&testing logs and model checkpoints can be downloaded from here: https://pan.baidu.com/s/1WNc5gRKoCjF31vzNgDFOSQ?pwd=055o .
 
 ## Visualization
 ### Predictions
