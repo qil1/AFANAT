@@ -12,8 +12,10 @@ Testing results on Human3.6M is:
 
 Visualized results (left is ground truth, right is prediction):
 
-<img alt="gt" height="150" src="./assets/gt_walking_h36.gif" title="ground truth"/>
-<img alt="pred" height="150" src="./assets/pred_walking_h36.gif" title="prediction"/>
+<figure class="half">
+<img alt="gt" height="100" src="./assets/gt_walking_h36.gif" title="ground truth"/>
+<img alt="pred" height="100" src="./assets/pred_walking_h36.gif" title="prediction"/>
+</figure>
 
 ## Datasets
 
