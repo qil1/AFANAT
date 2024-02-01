@@ -73,8 +73,8 @@ class Datasets(Dataset):
                         num_frames = len(even_list)
                         the_sequence = np.array(the_sequence[even_list, :])
                         the_sequence = torch.from_numpy(the_sequence).float().to(self.opt.gpu_index)
-                        # remove global rotation and translation
-                        the_sequence[:, 0:3] = 0  # 0:6
+                        # remove global translation and rotation
+                        the_sequence[:, 0:6] = 0  # 0:6
                         p3d = data_utils.expmap2xyz_torch(self.opt, the_sequence)
                         # self.p3d[(subj, action, subact)] = p3d.view(num_frames, -1).cpu().data.numpy()
                         self.p3d[key] = p3d.view(num_frames, -1).cpu().data.numpy()
@@ -133,7 +133,7 @@ class Datasets(Dataset):
                     key += 2
 
         # ignore constant joints and joints at same position with other joints
-        joint_to_ignore = np.array([11, 16, 20, 23, 24, 28, 31,4,5,9,10,21,22,29,30]) #  np.array([0, 1, 6, 11, 16, 20, 23, 24, 28, 31])  #
+        joint_to_ignore = np.array([0, 1, 6, 11, 16, 20, 23, 24, 28, 31])  # np.array([11, 16, 20, 23, 24, 28, 31,4,5,9,10,21,22,29,30])
         dimensions_to_ignore = np.concatenate((joint_to_ignore * 3, joint_to_ignore * 3 + 1, joint_to_ignore * 3 + 2))
         self.dimensions_to_use = np.setdiff1d(np.arange(96), dimensions_to_ignore)
 

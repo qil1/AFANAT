@@ -2,19 +2,13 @@
 
 ## Update
 We have added the training and testing code for Human3.6M dataset, which is not reported in our paper. The dataset can
-be downloaded from here: https://pan.baidu.com/s/1b8vnSr8vmRbaJsUMdEsrmg?pwd=zyc2 .
+be downloaded from [here](https://pan.baidu.com/s/1b8vnSr8vmRbaJsUMdEsrmg?pwd=zyc2) (original stanford link has crashed, this link is a backup).
 
 Testing results on Human3.6M is:
 
 | Millisecond | 80 | 160 | 320 | 400 | 560 | 1000 |
 |-------|-------|-------|-------|-------|-------|-------|
 | Average | 10.2 | 22.7 | 47.9 | 59.0 | 77.2 | 111.2 |
-
-Visualized results (left is ground truth, right is prediction):
-
-<figure class="third">
-<img alt="gt" height="100" src="./assets/gt_walking_h36.gif" title="ground truth"/> <img alt="pred" height="100" src="./assets/pred_walking_h36.gif" title="prediction"/>
-</figure>
 
 ## Datasets
 
@@ -45,7 +39,7 @@ python test/test_3dpw.py --data_dir './data/3DPW/sequenceFiles' --save_dir_name 
 ```
 
 After running the above commands, you can run utils/get_avg_eval.py to get the averaged test results of the last 10 epochs(the results reported in our paper).
-Training&testing logs and model checkpoints can be downloaded from here: https://pan.baidu.com/s/1WNc5gRKoCjF31vzNgDFOSQ?pwd=055o .
+Training&testing logs and model checkpoints can be downloaded from [here](https://pan.baidu.com/s/1WNc5gRKoCjF31vzNgDFOSQ?pwd=055o).
 
 ## Visualization
 ### Predictions
