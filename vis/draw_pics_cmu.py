@@ -44,10 +44,8 @@ def draw_pic_single(color, mydata, I, J, LR, full_path):
     # Make connection matrix
     for i in np.arange(len(I)):
         x, y, z = [np.array([mydata[I[i], j], mydata[J[i], j]]) for j in range(3)]
-        ax.plot(x, y, z, lw=2, c=color)
+        ax.plot(x, y, z, lw=1, color='#B4B4B4' if LR[i] == 0 else '#FA2828' if LR[i] == 2 else '#F57D7D')
 
-    # set grid invisible
-    ax.grid(None)
 
     # set X、Y、Z background color white
     ax.xaxis.set_pane_color((1.0, 1.0, 1.0, 1.0))
@@ -107,39 +105,39 @@ def draw_pic_gt_pred(gt, pred, I, J, LR, full_path):
 
 
 DRAW_LINE = [
-    (20, 17),
-    (17, 18),
-    (18, 19),
-    (20, 21),
-    (21, 22),
-    (22, 23),
-    (23, 25),
-    (25, 26),
-    (23, 28),
-    (20, 30),
-    (30, 31),
-    (31, 33),
-    (33, 37),
-    (33, 34),
-    (34, 35),
-    (20, 14),
-    (14, 13),
-    (13, 8),
-    (8, 9),
-    (9, 10),
-    (10, 11),
-    (11, 12),
-    (13, 2),
-    (2, 3),
-    (3, 4),
-    (4, 5),
-    (5, 6)
+    (0, 8, 0),
+    (8, 9, 0),
+    (9, 10, 0),
+    (10, 11, 0),
+    (11, 12, 0),
+    (0, 2, 2),
+    (2, 3, 2),
+    (3, 4, 2),
+    (4, 5, 2),
+    (5, 6, 2),
+    (0, 14, 1),
+    (14, 15, 1),
+    (15, 17, 1),
+    (17, 18, 1),
+    (18, 19, 1),
+    (15, 30, 0),
+    (30, 31, 0),
+    (31, 32, 0),
+    (32, 34, 0),
+    (34, 35, 0),
+    (32, 37, 0),
+    (15, 21, 2),
+    (21, 22, 2),
+    (22, 23, 2),
+    (23, 25, 2),
+    (25, 26, 2),
+    (23, 28, 2)
 ]
 I, J, LR = [], [], []
 for i in range(len(DRAW_LINE)):
     I.append(DRAW_LINE[i][0])
     J.append(DRAW_LINE[i][1])
-    LR.append(1)
+    LR.append(DRAW_LINE[i][2])
 
 if __name__ == "__main__":
     config = Options().parse()

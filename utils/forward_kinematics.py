@@ -212,7 +212,7 @@ def _some_variables_cmu():
 
 
 def fkl_torch(opt, angles, parent, offset, rotInd, expmapInd):
-    """
+    """ remove global translation and rotation
     pytorch version of fkl.
     convert joint angles to joint locations
     batch pytorch version of the fkl() method above

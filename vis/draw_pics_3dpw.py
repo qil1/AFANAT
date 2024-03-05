@@ -44,7 +44,8 @@ def draw_pic_single(color, mydata, I, J, LR, full_path):
     # Make connection matrix
     for i in np.arange(len(I)):
         x, y, z = [np.array([mydata[I[i], j], mydata[J[i], j]]) for j in range(3)]
-        ax.plot(x, y, z, lw=2, c=color)
+        # ax.plot(x, y, z, lw=2, c=color)
+        ax.plot(x, y, z, lw=1, color='#B4B4B4' if LR[i] == 0 else '#FA2828' if LR[i] == 2 else '#F57D7D')
 
     # set grid invisible
     ax.grid(None)
@@ -107,34 +108,36 @@ def draw_pic_gt_pred(gt, pred, I, J, LR, full_path):
 
 
 DRAW_LINE = [
-    (0, 3),
-    (1, 4),
-    (3, 6),
-    (6, 9),
-    (4, 7),
-    (7, 10),
-    (2, 1),
-    (2, 0),
-    (14, 11),
-    (11, 8),
-    (12, 15),
-    (15, 17),
-    (17, 19),
-    (19, 21),
-    (13, 16),
-    (16, 18),
-    (18, 20),
-    (20, 22),
-    (5, 2),
-    (5, 8),
-    (12, 8),
-    (13, 8)
+    (0, 1, 2),
+    (1, 4, 2),
+    (4, 7, 2),
+    (7, 10, 2),
+    (13, 9, 2),
+    (13, 16, 2),
+    (16, 18, 2),
+    (18, 20, 2),
+    (20, 22, 2),
+    (0, 2, 0),
+    (2, 5, 0),
+    (5, 8, 0),
+    (8, 11, 0),
+    (14, 9, 0),
+    (14, 17, 0),
+    (17, 19, 0),
+    (19, 21, 0),
+    (21, 23, 0),
+    (15, 12, 1),
+    (12, 9, 1),
+    (6, 3, 1),
+    (6, 9, 1),
+    (0, 3, 1)
 ]
 I, J, LR = [], [], []
 for i in range(len(DRAW_LINE)):
     I.append(DRAW_LINE[i][0])
     J.append(DRAW_LINE[i][1])
-    LR.append(1)
+    LR.append(DRAW_LINE[i][2])
+
 
 if __name__ == "__main__":
     config = Options().parse()
@@ -172,8 +175,8 @@ if __name__ == "__main__":
         )
         dec_res = rearrange(dec_res, 't b c d -> b t (c d)')
         pred32[:, config.t_his:config.t_his + config.t_pred, dim_used] = dec_res[:, :config.t_pred]
-        pred32 = pred32[:, :, dim_used].reshape([-1, config.t_his + config.t_pred, 23, 3])
-        gt3d_t = rearrange(gt3d[:, :, dim_used], 'b t (c d) -> b t c d', d=3).contiguous()
+        pred32 = pred32[:, :, :].reshape([-1, config.t_his + config.t_pred, 24, 3])
+        gt3d_t = rearrange(gt3d[:, :, :], 'b t (c d) -> b t c d', d=3).contiguous()
 
         sample_gt = gt3d_t[0].detach().cpu()*1000
         sample_pred = pred32[0].detach().cpu()*1000
