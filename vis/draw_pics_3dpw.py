@@ -45,7 +45,11 @@ def draw_pic_single(color, mydata, I, J, LR, full_path):
     for i in np.arange(len(I)):
         x, y, z = [np.array([mydata[I[i], j], mydata[J[i], j]]) for j in range(3)]
         # ax.plot(x, y, z, lw=2, c=color)
-        ax.plot(x, y, z, lw=1, color='#B4B4B4' if LR[i] == 0 else '#FA2828' if LR[i] == 2 else '#F57D7D')
+        if color == 'gt':
+            ax.plot(x, y, z, lw=3, color='#B4B4B4' if LR[i] == 0 else '#FA2828' if LR[i] == 2 else '#F57D7D')
+        else:
+            ax.plot(x, y, z, lw=3, color='#EED5B7' if LR[i] == 0 else '#EE82EE' if LR[i] == 2 else '#FFC0CB')
+
 
     # set grid invisible
     ax.grid(None)
@@ -108,24 +112,24 @@ def draw_pic_gt_pred(gt, pred, I, J, LR, full_path):
 
 
 DRAW_LINE = [
-    (0, 1, 2),
-    (1, 4, 2),
-    (4, 7, 2),
-    (7, 10, 2),
-    (13, 9, 2),
-    (13, 16, 2),
-    (16, 18, 2),
-    (18, 20, 2),
-    (20, 22, 2),
-    (0, 2, 0),
-    (2, 5, 0),
-    (5, 8, 0),
-    (8, 11, 0),
-    (14, 9, 0),
-    (14, 17, 0),
-    (17, 19, 0),
-    (19, 21, 0),
-    (21, 23, 0),
+    (0, 1, 0),
+    (1, 4, 0),
+    (4, 7, 0),
+    (7, 10, 0),
+    (13, 9, 0),
+    (13, 16, 0),
+    (16, 18, 0),
+    (18, 20, 0),
+    (20, 22, 0),
+    (0, 2, 2), # 2
+    (2, 5, 2),
+    (5, 8, 2),
+    (8, 11, 2),
+    (14, 9, 2),
+    (14, 17, 2),
+    (17, 19, 2),
+    (19, 21, 2),
+    (21, 23, 2),
     (15, 12, 1),
     (12, 9, 1),
     (6, 3, 1),
@@ -185,8 +189,8 @@ if __name__ == "__main__":
         for t_id in range(t):
             if not os.path.exists('./vis/{}'.format("3dpw_" + str(cnt))):
                 os.mkdir('./vis/{}'.format("3dpw_" + str(cnt)))
-            draw_pic_single('#B4B4B4', sample_gt[t_id], I, J, LR, './vis/{}/gt_{}.png'.format("3dpw_" + str(cnt), t_id))
-            draw_pic_single('#FA2828', sample_pred[t_id], I, J, LR,
+            draw_pic_single('gt', sample_gt[t_id], I, J, LR, './vis/{}/gt_{}.png'.format("3dpw_" + str(cnt), t_id))
+            draw_pic_single('pred', sample_pred[t_id], I, J, LR,
                             './vis/{}/pred_{}.png'.format("3dpw_" + str(cnt), t_id))
             # draw_pic_gt_pred(sample_gt[t_id], sample_pred[t_id], I, J, LR,
             #                  './vis/{}/{}.png'.format(act + str(cnt), t_id))

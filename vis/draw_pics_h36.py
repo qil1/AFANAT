@@ -44,7 +44,10 @@ def draw_pic_single(color, mydata, I, J, LR, full_path):
     # Make connection matrix
     for i in np.arange(len(I)):
         x, y, z = [np.array([mydata[I[i], j], mydata[J[i], j]]) for j in range(3)]
-        ax.plot(x, y, z, lw=1, color='#B4B4B4' if LR[i] == 0 else '#FA2828' if LR[i] == 2 else '#F57D7D')
+        if color == 'gt':
+            ax.plot(x, y, z, lw=3, color='#B4B4B4' if LR[i] == 0 else '#FA2828' if LR[i] == 2 else '#F57D7D')
+        else:
+            ax.plot(x, y, z, lw=3, color='#EED5B7' if LR[i] == 0 else '#EE82EE' if LR[i] == 2 else '#FFC0CB')
     # set grid invisible
     ax.grid(None)
 
@@ -126,6 +129,8 @@ if __name__ == "__main__":
                 print("Action: ", act, cnt)
 
                 cnt += 1
+                if cnt != 4:
+                    continue
                 gt3d = gt3d.type(dtype).to(device).contiguous()
                 gt3d /= 1000.
                 batch_size, seq_n, _ = gt3d.shape
@@ -142,15 +147,15 @@ if __name__ == "__main__":
                 pred32 = pred32.reshape([-1, config.t_his + config.t_pred, 32, 3])
                 gt3d_t = rearrange(gt3d[:, :], 'b t (c d) -> b t c d', d=3).contiguous()
 
-                sample_gt = gt3d_t[0].detach().cpu()*1000
-                sample_pred = pred32[0].detach().cpu()*1000
+                sample_gt = gt3d_t[26].detach().cpu()*1000
+                sample_pred = pred32[26].detach().cpu()*1000
                 t, c, d = sample_gt.shape
 
                 for t_id in range(t):
                     if not os.path.exists('./vis/{}'.format(act + str(cnt))):
                         os.mkdir('./vis/{}'.format(act + str(cnt)))
-                    draw_pic_single('#B4B4B4', sample_gt[t_id], I, J, LR, './vis/{}/gt_{}.png'.format(act + str(cnt), t_id))
-                    draw_pic_single('#FA2828', sample_pred[t_id], I, J, LR,
+                    draw_pic_single('gt', sample_gt[t_id], I, J, LR, './vis/{}/gt_{}.png'.format(act + str(cnt), t_id))
+                    draw_pic_single('pred', sample_pred[t_id], I, J, LR,
                                     './vis/{}/pred_{}.png'.format(act + str(cnt), t_id))
                     # draw_pic_gt_pred(sample_gt[t_id], sample_pred[t_id], I, J, LR,
                     #                  './vis/{}/{}.png'.format(act + str(cnt), t_id))
