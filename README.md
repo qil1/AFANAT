@@ -1,5 +1,3 @@
-# AFANAT
-
 ## Update
 We have added the training and testing code for Human3.6M dataset, which is not reported in our paper. The dataset can
 be downloaded from [here](https://pan.baidu.com/s/1b8vnSr8vmRbaJsUMdEsrmg?pwd=zyc2) (original stanford link has crashed, this link is a backup).
